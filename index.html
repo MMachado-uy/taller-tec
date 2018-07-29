@@ -1,0 +1,77 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Obligatorio Taller Tecnologias</title>
+
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.external-png-1.4.5.min.css">
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.icons-1.4.5.min.css">
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.inline-png-1.4.5.min.css">
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.inline-svg-1.4.5.min.css">
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.structure-1.4.5.min.css">
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.theme-1.4.5.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div data-role="page" id="first">
+        <div data-role="header">
+            <h1>I'm a header</h1>
+        </div> <!-- Header -->
+
+        <div data-role="content">
+            <h1>Hello World!</h1>
+
+            <ul data-role="listview" data-inset="true" data-filter="true">
+                <li><a href="#">Acura</a></li>
+                <li><a href="#">Audi</a></li>
+                <li><a href="#">BMW</a></li>
+                <li><a href="#">Cadillac</a></li>
+                <li><a href="#">Ferrari</a></li>
+            </ul>
+            <form>
+                <label for="slider-0">Input slider:</label>
+                <input type="range" name="slider" id="slider-0" value="25" min="0" max="100" />
+            </form>
+        </div> <!-- Content -->
+
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#first">One</a></li>
+                    <li><a href="#second">Two</a></li>
+                </ul>
+            </div>
+        </div> <!-- Footer -->
+    </div> <!-- Page -->
+
+    <div data-role="page" id="second">
+        <div data-role="header">
+            <h1>I'm a header</h1>
+        </div> <!-- Header -->
+
+        <div data-role="content">
+            <h1>Page 2</h1>
+
+            <form>
+                <label for="slider-0">Input slider:</label>
+                <input type="range" name="slider" id="slider-0" value="25" min="0" max="100" />
+            </form>
+        </div> <!-- Content -->
+
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#first">One</a></li>
+                    <li><a href="#second">Two</a></li>
+                </ul>
+            </div>
+        </div> <!-- Footer -->
+    </div> <!-- Page -->
+
+    <script src="lib/jquery-1.12.4.min.js"></script>
+    <script src="lib/jquery-mobile/jquery.mobile-1.4.5.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
