@@ -15,56 +15,170 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div data-role="page" id="first">
+    <div data-role="page" id="inicio">
         <div data-role="header">
-            <h1>I'm a header</h1>
+            <h1>Inicio</h1>
         </div> <!-- Header -->
 
         <div data-role="content">
-            <h1>Hello World!</h1>
+            <h1>Bienvenido, $usuario</h1>
 
-            <ul data-role="listview" data-inset="true" data-filter="true">
-                <li><a href="#">Acura</a></li>
-                <li><a href="#">Audi</a></li>
-                <li><a href="#">BMW</a></li>
-                <li><a href="#">Cadillac</a></li>
-                <li><a href="#">Ferrari</a></li>
+            <ul data-role="listview" data-inset="true" data-filter="false">
+                <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
+                <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
+                <li><a class="" data-transition="none" href="#centros">Centros</a></li>
+                <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
             </ul>
             <form>
                 <label for="slider-0">Input slider:</label>
                 <input type="range" name="slider" id="slider-0" value="25" min="0" max="100" />
             </form>
         </div> <!-- Content -->
+    </div> <!-- Page -->
+
+    <div data-role="page" id="usuarios">
+        <div data-role="header">
+            <a class="" data-transition="none" href="#inicio" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <h1>Usuarios</h1>
+        </div> <!-- Header -->
+
+        <div data-role="content">
+            <h1>Mantenimiento de Usuarios</h1>
+
+            <a  href="#agregarUsuario" 
+                data-role="button"
+                data-rel="popup"
+                data-inline="true"
+                data-icon="plus"
+                data-position-to="window"
+            >
+                Agregar Usuario
+            </a>
+
+            <ul data-role="listview" 
+                data-inset="false" 
+                data-filter="true" 
+                data-filter-placeholder="Buscar Usuarios"
+            >
+                <li><a class="" data-transition="none" href="#">Fulano</a></li>
+                <li><a class="" data-transition="none" href="#">Mengano</a></li>
+                <li><a class="" data-transition="none" href="#">Sultano</a></li>
+            </ul>
+
+            <div data-role="popup" id="agregarUsuario">
+                <a  href="#" 
+                    data-rel="back" 
+                    data-role="button" 
+                    data-theme="a" 
+                    data-icon="delete" 
+                    data-iconpos="notext" 
+                    class="ui-btn-right"
+                >
+                    Close
+                </a>
+                <form>
+                    <div style="padding:10px 20px;">
+                      <h3>Crear nuevo usuario</h3>
+                      <label for="un" class="ui-hidden-accessible">Username:</label>
+                      <input type="text" name="user" id="un" value="" placeholder="username" data-theme="a" />
+
+                      <label for="pw" class="ui-hidden-accessible">Password:</label>
+                      <input type="password" name="pass" id="pw" value="" placeholder="password" data-theme="a" />
+
+                      <button type="submit" data-theme="b">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div> <!-- Content -->
 
         <div data-role="footer" data-position="fixed">
             <div data-role="navbar">
                 <ul>
-                    <li><a href="#first">One</a></li>
-                    <li><a href="#second">Two</a></li>
+                    <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#usuarios">Usuarios</a></li>
+                    <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
+                    <li><a class="" data-transition="none" href="#centros">Centros</a></li>
+                    <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
                 </ul>
             </div>
         </div> <!-- Footer -->
     </div> <!-- Page -->
 
-    <div data-role="page" id="second">
+    <div data-role="page" id="medicos">
         <div data-role="header">
-            <h1>I'm a header</h1>
+            <a class="" data-transition="none" href="#inicio" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <h1>Medicos</h1>
         </div> <!-- Header -->
 
         <div data-role="content">
             <h1>Page 2</h1>
 
             <form>
-                <label for="slider-0">Input slider:</label>
-                <input type="range" name="slider" id="slider-0" value="25" min="0" max="100" />
+                <label for="slider-1">Input slider:</label>
+                <input type="range" name="slider" id="slider-1" value="25" min="0" max="100" />
             </form>
         </div> <!-- Content -->
 
         <div data-role="footer" data-position="fixed">
             <div data-role="navbar">
                 <ul>
-                    <li><a href="#first">One</a></li>
-                    <li><a href="#second">Two</a></li>
+                    <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
+                    <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#medicos">Medicos</a></li>
+                    <li><a class="" data-transition="none" href="#centros">Centros</a></li>
+                    <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
+                </ul>
+            </div>
+        </div> <!-- Footer -->
+    </div> <!-- Page -->
+
+    <div data-role="page" id="centros">
+        <div data-role="header">
+            <a class="" data-transition="none" href="#inicio" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <h1>Centros</h1>
+        </div> <!-- Header -->
+
+        <div data-role="content">
+            <h1>Page 2</h1>
+
+            <form>
+                <label for="slider-2">Input slider:</label>
+                <input type="range" name="slider" id="slider-2" value="25" min="0" max="100" />
+            </form>
+        </div> <!-- Content -->
+
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
+                    <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
+                    <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#centros">Centros</a></li>
+                    <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
+                </ul>
+            </div>
+        </div> <!-- Footer -->
+    </div> <!-- Page -->
+
+    <div data-role="page" id="consultas">
+        <div data-role="header">
+            <a class="" data-transition="none" href="#inicio" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <h1>Consultas</h1>
+        </div> <!-- Header -->
+
+        <div data-role="content">
+            <h1>Page 2</h1>
+
+            <form>
+                <label for="slider-3">Input slider:</label>
+                <input type="range" name="slider" id="slider-3" value="25" min="0" max="100" />
+            </form>
+        </div> <!-- Content -->
+
+        <div data-role="footer" data-position="fixed">
+            <div data-role="navbar">
+                <ul>
+                    <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
+                    <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
+                    <li><a class="" data-transition="none" href="#centros">Centros</a></li>
+                    <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#consultas">Consultas</a></li>
                 </ul>
             </div>
         </div> <!-- Footer -->
