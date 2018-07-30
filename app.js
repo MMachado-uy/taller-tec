@@ -1,4 +1,4 @@
-
+// medicort.tribus.com.uy
 $(document).on('pageinit', init)
 
 $(document).on('pagebeforeshow', '#inicio', function(e, data){      
