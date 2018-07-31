@@ -1,7 +1,15 @@
 // medicort.tribus.com.uy
-$(document).on('pageinit', init)
+$(document)
+.on('pageinit', init)
+.on('pagebeforeshow', '#login', function(e, data){      
+    $('#login .login').on('submit', function(e) {
+        e.preventDefault();
+        console.log(e);
 
-$(document).on('pagebeforeshow', '#inicio', function(e, data){      
+        jQuery.mobile.navigate('#inicio')
+    })       
+})
+.on('pagebeforeshow', '#inicio', function(e, data){      
     $.ajax({
         url: "http://api.openweathermap.org/data/2.5/weather",
         type: "GET",
@@ -14,20 +22,40 @@ $(document).on('pagebeforeshow', '#inicio', function(e, data){
             $("#mensaje").text("No hay nadie!");
         }
     });       
-});
+})
+.on('pagebeforeshow', '#usuarios', function(e, data){      
+    $('.verUsuario').on('click', function(e) {
+        e.preventDefault();
 
-$(document).on('pagebeforeshow', '#medicos', function(e, data){      
-       
-});
-
-$(document).on('pagebeforeshow', '#centros', function(e, data){      
+        $("#verUsuario").popup("open");
+    });
+})
+.on('pageshow', '#medicos', function(e, data){      
+    showLoader();
+})
+.on('pagechange', '#medicos', function(e, data) {
+        hideLoader();
+})
+.on('pagebeforeshow', '#centros', function(e, data){      
       
-});
-
-$(document).on('pagebeforeshow', '#consultas', function(e, data){      
+})
+.on('pagebeforeshow', '#consultas', function(e, data){      
        
 });
 
 function init() {
-  
+
 }
+
+function showLoader() {
+    console.log('loader')
+//     var $this = $(this),
+//         msgText = '',
+//         textVisible = false,
+//         textonly = false;
+//         html = '';
+        $.mobile.loading("show");
+}
+function hideLoader() {
+    $.mobile.loading("hide");
+};

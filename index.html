@@ -15,6 +15,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div data-role="page" id="login">
+        <div data-role="header">
+            <h1>Bienvenido</h1>
+        </div>
+        <div data-role="content">
+            <form class="login">
+                <div style="padding:10px 20px;">
+                    <h3>Ingrese sus datos de inicio de sesion:</h3>
+                    <label for="email" class="ui-hidden-accessible">Email:</label>
+                    <input type="text" name="name" id="email" value="" placeholder="juanperez@adinet.com.uy" data-theme="a" />
+
+                    <label for="password" class="ui-hidden-accessible">Contraseña:</label>
+                    <input type="password" name="password" id="contrasenia" value="" placeholder="••••••••" data-theme="a" />
+                                            
+                  <button type="submit" data-theme="b">Entrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
     <div data-role="page" id="inicio">
         <div data-role="header">
             <h1>Inicio</h1>
@@ -52,14 +71,37 @@
             </a>
 
             <ul data-role="listview" 
-                data-inset="false" 
+                data-inset="true" 
                 data-filter="true" 
                 data-filter-placeholder="Buscar Usuarios"
             >
-                <li><a class="" data-transition="none" href="#">Fulano</a></li>
-                <li><a class="" data-transition="none" href="#">Mengano</a></li>
-                <li><a class="" data-transition="none" href="#">Sultano</a></li>
+                <li><a class="verUsuario" data-transition="none" href="#">Fulano</a></li>
+                <li><a class="verUsuario" data-transition="none" href="#">Mengano</a></li>
+                <li><a class="verUsuario" data-transition="none" href="#">Sultano</a></li>
             </ul>
+
+            <div data-role="popup" id="verUsuario">
+                <a  href="#" 
+                    data-rel="back" 
+                    data-role="button" 
+                    data-theme="a" 
+                    data-icon="delete" 
+                    data-iconpos="notext" 
+                    class="ui-btn-right"
+                >
+                    Close
+                </a>
+                <div style="padding:10px 20px;">
+                    <h3>Detalles de usuario</h3>
+
+                    <span><b>Nombre:</b></span><span class="nombre">Fulano</span>
+                    <label for="flip-3">Flip toggle switch:</label>
+                    <select name="flip-3" id="flip-3" data-role="slider" data-mini="true">
+                        <option value="off">Off</option>
+                        <option value="on">On</option>
+                    </select>
+                </div>
+            </div>
 
             <div data-role="popup" id="agregarUsuario">
                 <a  href="#" 
