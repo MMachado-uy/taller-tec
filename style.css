@@ -6,6 +6,10 @@
     background-color: orange;
 }
 
+.success {
+    background-color: green;
+}
+
 .m-top--s {
     margin-top: 0.5em !important;
 }

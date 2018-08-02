@@ -48,21 +48,20 @@
                 >
                     Close
                 </a>
-                <div style="padding:10px 20px;" class="warning">
-                    <h3>Hubo un problema al iniciar sesion</h3>
-
-                    <p class="msg"></p>
+                <div class="warning ui-content">
+                    <p>Hubo un problema al iniciar sesion</p>
                 </div>
             </div>
         </div>
     </div>
+
     <div data-role="page" id="inicio">
         <div data-role="header">
             <h1>Inicio</h1>
         </div> <!-- Header -->
 
         <div data-role="content">
-            <h1>Bienvenido, $usuario</h1>
+            <h1 id="bienvenida"></h1>
 
             <ul data-role="listview" data-inset="true" data-filter="false">
                 <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
@@ -225,8 +224,8 @@
             <h1>Alta de Usuarios</h1>
         </div> <!-- Header -->
         <div data-role="content">
-            <form>
-                <div style="padding:10px 20px;">
+            <form class="register">
+                <div class="ui-content">
                     <h3>Crear nuevo usuario</h3>
                     <div class="ui-field-contain">
                         <label for="nombre">Nombre:</label>
@@ -238,6 +237,9 @@
                         <label class="m-top--s" for="email">Email:</label>
                         <input type="email" name="email" id="email" value="" placeholder="jperez@adinet.com.uy" data-theme="a" />
 
+                        <label class="m-top--s" for="password">Contraseña:</label>
+                        <input type="password" name="password" id="password" value="" placeholder="••••••••" data-theme="a" />
+
                         <label class="m-top--s" for="documento">Documento:</label>
                         <input type="text" pattern="(^[1-7]\d{5,6})" title="Numero de documento sin puntos ni guiones" name="documento" id="documento" value="" placeholder="1234567" data-theme="a" />
 
@@ -248,8 +250,38 @@
                   <button type="submit" data-theme="b">Guardar</button>
                 </div>
             </form>
+            <div data-role="popup" id="errRegistro">
+                <a  href="#" 
+                    data-rel="back" 
+                    data-role="button" 
+                    data-theme="a" 
+                    data-icon="delete" 
+                    data-iconpos="notext" 
+                    class="ui-btn-right"
+                >
+                    Close
+                </a>
+                <div class="warning ui-content">
+                    <p>Hubo un problema al registrar el nuevo usuario</p>
+                </div>
+            </div>
+            <div data-role="popup" id="exitoRegistro">
+                <a  href="#" 
+                    data-rel="back" 
+                    data-role="button" 
+                    data-theme="a" 
+                    data-icon="delete" 
+                    data-iconpos="notext" 
+                    class="ui-btn-right"
+                >
+                    Close
+                </a>
+                <div class="success ui-content">
+                    <p>Usuario creado con exito</p>
+                </div>
+            </div>
         </div> <!-- Content -->
-    </div>
+    </div> <!-- Page -->
 
     <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="lib/jquery-mobile/jquery.mobile-1.4.5.min.js"></script>

@@ -10,18 +10,7 @@ $(document)
 .on('pagebeforeshow', '#inicio', function(e, data){
     if (isUserLogged()) {
         // STUFF
-        $.ajax({
-            url: "http://api.openweathermap.org/data/2.5/weather",
-            type: "GET",
-            dataType: "json",
-            data: {q: 'Montevideo', appid: "1573c2baa2cfe07cb8ee524834829651", lang: "es", units: "metric"},
-            success: function(response){
-                console.log("success",response);
-            },error: function(response){
-                console.log("error",response);
-                $("#mensaje").text("No hay nadie!");
-            }
-        });       
+        ////////////////////////////////////////////////////////////////////////  
     } else {
         $.mobile.navigate('#login')
     }
@@ -58,49 +47,95 @@ function init() {
     $('.backFromRegistro').click(backFromRegistro);
     
     // Login listener
-    $('#login .login').on('submit', login)   
+    $('#login .login').on('submit', login);
+
+    // Adduser listener
+    $('#altaUsuario .register').on('submit', altaUsuario);
 }
 
 function login(e) {
     sanitizeEvt(e);
+
+    $('#login .login button').attr('disabled', 'disabled');
+    showLoader();
     
     var form = e.target;
     var email = $(form.email).val();
     var password = $(form.password).val();
 
+    var payload = {
+        email,
+        password
+    };
+
     $.ajax({
         url: `${api}/login`,
         type: 'GET',
         dataType: 'json',
-        data: {
-            email,
-            password
-        },
+        data: payload,
     })
-    .done(function(e) {
-        console.log("Done ->", e);
+    .done(function() {
+        $.mobile.navigate('#inicio')
     })
     .fail(function(e) {
-        console.log("Fail ->", e);
-
-        $('#errLogin .msg').html(e.responseText);
         $('#errLogin').popup( "open" )
     })
-    .always(function(e) {
-        console.log("Always ->", e);
-        // Mover al Done ###################################################
-        $.mobile.navigate('#inicio')
-    });
+    .always(function (e) {
+        $('#login .login button').attr('disabled', false);
+        hideLoader();
+    })
+}
+
+function altaUsuario(e) {
+    sanitizeEvt(e);
+
+    $('#altaUsuario .register button').attr('disabled', 'disabled');
+    showLoader();
+
+    var form = e.target;
+    var email = $(form.email).val();
+    var password = $(form.password).val();
+    var nombre = $(form.name).val();
+    var apellido = $(form.lastname).val();
+    var documento = $(form.documento).val();
+    var telefono = $(form.telefono).val();
+
+    var payload = {
+        email,
+        password,
+        nombre,
+        apellido,
+        documento,
+        telefono
+    }
+
+    $.ajax({
+        url: `${api}/registrar`,
+        type: 'POST',
+        dataType: 'json',
+        data: payload,
+    })
+    .done(function() {
+        $('#exitoRegistro').popup( "open" )
+        
+        $(form.email).val('');
+        $(form.password).val('');
+        $(form.name).val('');
+        $(form.lastname).val('');
+        $(form.documento).val('');
+        $(form.telefono).val('');
+    })
+    .fail(function(e) {
+        $('#errRegistro').popup( "open" )
+    })
+    .always(function (e) {
+        $('#altaUsuario .register button').attr('disabled', false);
+        hideLoader();
+    })
 }
 
 function showLoader() {
-    console.log('loader')
-//     var $this = $(this),
-//         msgText = '',
-//         textVisible = false,
-//         textonly = false;
-//         html = '';
-        $.mobile.loading("show");
+    $.mobile.loading("show");
 }
 
 function hideLoader() {
