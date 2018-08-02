@@ -21,17 +21,39 @@
         </div>
         <div data-role="content">
             <form class="login">
-                <div style="padding:10px 20px;">
+                <div class="ui-content">
                     <h3>Ingrese sus datos de inicio de sesion:</h3>
-                    <label for="email" class="ui-hidden-accessible">Email:</label>
-                    <input type="text" name="name" id="email" value="" placeholder="juanperez@adinet.com.uy" data-theme="a" />
+                    <label for="loginEmail" class="ui-hidden-accessible">Email:</label>
+                    <input required type="email" name="email" id="loginEmail" value="" placeholder="juanperez@adinet.com.uy" data-theme="a" />
 
                     <label for="password" class="ui-hidden-accessible">Contraseña:</label>
-                    <input type="password" name="password" id="contrasenia" value="" placeholder="••••••••" data-theme="a" />
+                    <input required type="password" name="password" id="contrasenia" value="" placeholder="••••••••" data-theme="a" />
                                             
                   <button type="submit" data-theme="b">Entrar</button>
                 </div>
             </form>
+
+            <div class="ui-content">
+                <span class="gotoRegistro right"><a href="#">Nuevo? Pasa por aca</a></span>
+            </div>
+
+            <div data-role="popup" id="errLogin">
+                <a  href="#" 
+                    data-rel="back" 
+                    data-role="button" 
+                    data-theme="a" 
+                    data-icon="delete" 
+                    data-iconpos="notext" 
+                    class="ui-btn-right"
+                >
+                    Close
+                </a>
+                <div style="padding:10px 20px;" class="warning">
+                    <h3>Hubo un problema al iniciar sesion</h3>
+
+                    <p class="msg"></p>
+                </div>
+            </div>
         </div>
     </div>
     <div data-role="page" id="inicio">
@@ -60,9 +82,9 @@
         <div data-role="content">
             <h1>Mantenimiento de Usuarios</h1>
 
-            <a  href="#agregarUsuario" 
+            <a  href="#" 
+                class="gotoRegistro" 
                 data-role="button"
-                data-rel="popup"
                 data-inline="true"
                 data-icon="plus"
                 data-position-to="window"
@@ -95,38 +117,12 @@
                     <h3>Detalles de usuario</h3>
 
                     <span><b>Nombre:</b></span><span class="nombre">Fulano</span>
-                    <label for="flip-3">Flip toggle switch:</label>
-                    <select name="flip-3" id="flip-3" data-role="slider" data-mini="true">
+                    <label for="flip-3">Habilitado?</label>
+                    <select disabled name="flip-3" id="flip-3" data-role="slider" data-mini="true">
                         <option value="off">Off</option>
                         <option value="on">On</option>
                     </select>
                 </div>
-            </div>
-
-            <div data-role="popup" id="agregarUsuario">
-                <a  href="#" 
-                    data-rel="back" 
-                    data-role="button" 
-                    data-theme="a" 
-                    data-icon="delete" 
-                    data-iconpos="notext" 
-                    class="ui-btn-right"
-                >
-                    Close
-                </a>
-                <form>
-                    <div style="padding:10px 20px;">
-                        <h3>Crear nuevo usuario</h3>
-                        <label for="nombre" class="ui-hidden-accessible">Nombre:</label>
-                        <input type="text" name="name" id="nombre" value="" placeholder="Juan" data-theme="a" />
-
-                        <label for="apellido" class="ui-hidden-accessible">Apellido:</label>
-                        <input type="text" name="lastname" id="apellido" value="" placeholder="Perez" data-theme="a" />
-
-                                                
-                      <button type="submit" data-theme="b">Guardar</button>
-                    </div>
-                </form>
             </div>
         </div> <!-- Content -->
 
@@ -222,6 +218,38 @@
             </div>
         </div> <!-- Footer -->
     </div> <!-- Page -->
+
+    <div data-role="page" id="altaUsuario">
+        <div data-role="header">
+            <a class="backFromRegistro" data-transition="none" href="#" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <h1>Alta de Usuarios</h1>
+        </div> <!-- Header -->
+        <div data-role="content">
+            <form>
+                <div style="padding:10px 20px;">
+                    <h3>Crear nuevo usuario</h3>
+                    <div class="ui-field-contain">
+                        <label for="nombre">Nombre:</label>
+                        <input type="text" name="name" id="nombre" value="" placeholder="Juan" data-theme="a" />
+                    
+                        <label class="m-top--s" for="apellido">Apellido:</label>
+                        <input type="text" name="lastname" id="apellido" value="" placeholder="Perez" data-theme="a" />
+
+                        <label class="m-top--s" for="email">Email:</label>
+                        <input type="email" name="email" id="email" value="" placeholder="jperez@adinet.com.uy" data-theme="a" />
+
+                        <label class="m-top--s" for="documento">Documento:</label>
+                        <input type="text" pattern="(^[1-7]\d{5,6})" title="Numero de documento sin puntos ni guiones" name="documento" id="documento" value="" placeholder="1234567" data-theme="a" />
+
+                        <label class="m-top--s" for="telefono">Telefono:</label>
+                        <input type="text" name="telefono" id="telefono" value="" placeholder="2204-05-67" data-theme="a" />
+
+                    </div>                                            
+                  <button type="submit" data-theme="b">Guardar</button>
+                </div>
+            </form>
+        </div> <!-- Content -->
+    </div>
 
     <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="lib/jquery-mobile/jquery.mobile-1.4.5.min.js"></script>

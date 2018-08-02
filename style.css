@@ -1,0 +1,11 @@
+.right {
+    float: right;
+}
+
+.warning {
+    background-color: orange;
+}
+
+.m-top--s {
+    margin-top: 0.5em !important;
+}
