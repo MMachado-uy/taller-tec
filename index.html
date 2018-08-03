@@ -64,7 +64,7 @@
             <h1 id="bienvenida"></h1>
 
             <ul data-role="listview" data-inset="true" data-filter="false">
-                <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
+                <li><a class="gotoRegistro" data-transition="none" href="#">Alta Usuarios</a></li>
                 <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
                 <li><a class="" data-transition="none" href="#centros">Centros</a></li>
                 <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
@@ -72,90 +72,28 @@
         </div> <!-- Content -->
     </div> <!-- Page -->
 
-    <div data-role="page" id="usuarios">
+    <div data-role="page" id="medicos">
         <div data-role="header">
-            <a class="" data-transition="none" href="#inicio" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
-            <h1>Usuarios</h1>
+            <a class="" data-transition="none" href="#inicio" data-icon="home" data-direction="reverse">Home</a>
+            <h1>Medicos</h1>
+            <a href="#" data-icon="forward">Logout</a>
         </div> <!-- Header -->
 
         <div data-role="content">
-            <h1>Mantenimiento de Usuarios</h1>
-
-            <a  href="#" 
-                class="gotoRegistro" 
-                data-role="button"
-                data-inline="true"
-                data-icon="plus"
-                data-position-to="window"
-            >
-                Agregar Usuario
-            </a>
+            <h1>Listado de profesionales medicos</h1>
 
             <ul data-role="listview" 
                 data-inset="true" 
                 data-filter="true" 
-                data-filter-placeholder="Buscar Usuarios"
+                data-filter-placeholder="Buscar Medicos"
+                id="listaMedicosGral"
             >
-                <li><a class="verUsuario" data-transition="none" href="#">Fulano</a></li>
-                <li><a class="verUsuario" data-transition="none" href="#">Mengano</a></li>
-                <li><a class="verUsuario" data-transition="none" href="#">Sultano</a></li>
             </ul>
-
-            <div data-role="popup" id="verUsuario">
-                <a  href="#" 
-                    data-rel="back" 
-                    data-role="button" 
-                    data-theme="a" 
-                    data-icon="delete" 
-                    data-iconpos="notext" 
-                    class="ui-btn-right"
-                >
-                    Close
-                </a>
-                <div style="padding:10px 20px;">
-                    <h3>Detalles de usuario</h3>
-
-                    <span><b>Nombre:</b></span><span class="nombre">Fulano</span>
-                    <label for="flip-3">Habilitado?</label>
-                    <select disabled name="flip-3" id="flip-3" data-role="slider" data-mini="true">
-                        <option value="off">Off</option>
-                        <option value="on">On</option>
-                    </select>
-                </div>
-            </div>
         </div> <!-- Content -->
 
         <div data-role="footer" data-position="fixed">
             <div data-role="navbar">
                 <ul>
-                    <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#usuarios">Usuarios</a></li>
-                    <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
-                    <li><a class="" data-transition="none" href="#centros">Centros</a></li>
-                    <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
-                </ul>
-            </div>
-        </div> <!-- Footer -->
-    </div> <!-- Page -->
-
-    <div data-role="page" id="medicos">
-        <div data-role="header">
-            <a class="" data-transition="none" href="#inicio" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
-            <h1>Medicos</h1>
-        </div> <!-- Header -->
-
-        <div data-role="content">
-            <h1>Page 2</h1>
-
-            <form>
-                <label for="slider-1">Input slider:</label>
-                <input type="range" name="slider" id="slider-1" value="25" min="0" max="100" />
-            </form>
-        </div> <!-- Content -->
-
-        <div data-role="footer" data-position="fixed">
-            <div data-role="navbar">
-                <ul>
-                    <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
                     <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#medicos">Medicos</a></li>
                     <li><a class="" data-transition="none" href="#centros">Centros</a></li>
                     <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
@@ -182,7 +120,6 @@
         <div data-role="footer" data-position="fixed">
             <div data-role="navbar">
                 <ul>
-                    <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
                     <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
                     <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#centros">Centros</a></li>
                     <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
@@ -209,7 +146,6 @@
         <div data-role="footer" data-position="fixed">
             <div data-role="navbar">
                 <ul>
-                    <li><a class="" data-transition="none" href="#usuarios">Usuarios</a></li>
                     <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
                     <li><a class="" data-transition="none" href="#centros">Centros</a></li>
                     <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#consultas">Consultas</a></li>

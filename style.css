@@ -13,3 +13,11 @@
 .m-top--s {
     margin-top: 0.5em !important;
 }
+
+text-right {
+    text-align: right !important;
+}
+
+text-center {
+    text-align: center !important;
+}
