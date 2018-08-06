@@ -38,7 +38,10 @@ function init() {
     $('.backFromRegistro').click(backFromRegistro);
 
     // Filtro de medicos favoritos listener
-    $('#medicos .solo-fav').click(soloFav)
+    $('#medicos .solo-fav').click(soloFav);
+
+    // Calificar listener
+    $('#med-calif').click(calificarMedico);
 
     // Login listener
     $('#login .login').on('submit', login);
@@ -200,7 +203,7 @@ function verMedico(filaMedico) {
     var apellido = $(filaMedico).attr('ape');
 
     $.ajax({
-        url: `${api}/getProfesionales`,
+        url: `${api}/getDetalleProfesional`,
         type: 'GET',
         dataType: 'json',
         data: {
@@ -209,7 +212,7 @@ function verMedico(filaMedico) {
         }
     })
     .done(function(res) {
-        var medico = res.profesionales[0];
+        var medico = res.profesional;
         var avatar = (medico.foto === '') ? 'assets/avatar.png' : medico.foto;
         var fav = esMedicoFavorito(medico.nombre, medico.apellido);
 
@@ -217,10 +220,10 @@ function verMedico(filaMedico) {
         $('#med-nombre').html(medico.nombre);
         $('#med-apellido').html(medico.apellido);
         $('#med-especialidad').html(medico.especialidad);
+        $('#med-titulo').html(medico.titulo);
+        $('#med-puntuacion').html(medico.puntuacion.toFixed(0));
 
         $('#fav-ico img').attr({
-            nom: medico.nombre,
-            ape: medico.apellido,
             src: (fav) ? 'assets/star-fill.png' : 'assets/star-clear.png'
         })
 
@@ -234,12 +237,12 @@ function verMedico(filaMedico) {
     })
 }
 
-function toggleMedicoFavorito(evt) {
-    sanitizeEvt(evt);
+function toggleMedicoFavorito(e) {
+    sanitizeEvt(e);
 
     var medico = {
-        nom: $(evt.target).attr('nom'),
-        ape: $(evt.target).attr('ape')
+        nom: $('#med-nombre').html(),
+        ape: $('#med-apellido').html()
     }
     var encontrado = false;
     var i = 0;
@@ -308,6 +311,32 @@ function soloFav(e) {
     } else {
         $(`#${page} ul[data-role="listview"] li a`).not('.fav').closest('li').show();
     }
+}
+
+function calificarMedico(e) {
+
+    $('#verMedico').popup("close");
+
+    $('#verMedico').on('popupafterclose', function() {
+
+        $('#verMedico').off('popupafterclose');
+        var medico = {
+            nom: $('#med-nombre').html(),
+            ape: $('#med-apellido').html()
+        }
+        var nombre = `${medico.nom} ${medico.ape}`;
+
+        $('#calif-nombre').html(nombre);
+        $('#calificacion-slide').val($('#med-puntuacion').html());
+        $('#calificacion-slide').slider('refresh');
+
+        $('#califMedico').popup("open");
+        console.log(medico)
+    })
+}
+
+function puntuarMedico(nombre, apellido, puntaje) {
+    $.ajax()
 }
 
 function showLoader() {

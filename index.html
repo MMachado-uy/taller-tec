@@ -113,7 +113,7 @@
                     <div id="avatar-container" class="m-top--s m-bottom--s text-center">
                         <img id="med-avatar" src="">
                         <a id="fav-ico" class="top-right" href="#">
-                            <img nom="" ape="" src="">
+                            <img src="">
                         </a>
                     </div>
                     <table border="0">
@@ -126,12 +126,43 @@
                             <td><span id="med-apellido"></span></td>
                         </tr>
                         <tr>
+                            <td><b>Puntuacion:</b></td>
+                            <td><span id="med-puntuacion"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Titulo:</b></td>
+                            <td><span id="med-titulo"></span></td>
+                        </tr>
+                        <tr>
                             <td><b>Especialidad:</b></td>
                             <td><span id="med-especialidad"></span></td>
                         </tr>
                     </table>
+                    <a href="#" id="med-calif" class="ui-btn ui-btn-inline">Calificar</a>
                 </div>
-            </div>
+            </div> <!-- Ver Popup -->
+            <div data-role="popup" id="califMedico">
+                <a  href="#"
+                    data-rel="back"
+                    data-role="button"
+                    data-theme="a"
+                    data-icon="delete"
+                    data-iconpos="notext"
+                    class="ui-btn-right"
+                >
+                    Close
+                </a>
+                <div class="ui-content">
+                    <h3>Califique a <span id="calif-nombre"></span></h3>
+                    <p class="text-light">Puntaje del 1 al 100</p>
+                    <form>
+                        <label for="calificacion-slide">Calificacion:</label>
+                        <input type="range" name="slider" id="calificacion-slide" value="" min="1" max="100" />
+                    </form>
+
+                    <a href="#" id="med-calif" class="ui-btn ui-btn-inline">Calificar</a>
+                </div>
+            </div> <!-- Ver Popup -->
         </div> <!-- Content -->
 
         <div data-role="footer" data-position="fixed">
