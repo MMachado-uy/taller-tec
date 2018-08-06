@@ -7,7 +7,7 @@ $(document)
 .on('pagebeforeshow', '#login', function(e, data) {})
 .on('pagebeforeshow', '#inicio', function(e, data) {
     if (isUserLogged()) {
-        $('#bienvenida').html(`Bienvenido, ${loggedUser.id_usuario}`);  
+        $('#bienvenida').html(`Bienvenido, ${loggedUser.id_usuario}`);
     } else {
         $.mobile.navigate('#login')
     }
@@ -16,24 +16,37 @@ $(document)
     if (!isUserLogged()) $.mobile.navigate('#login');
     else getMedicos();
 })
-.on('pagebeforeshow', '#centros', function(e, data) {      
+.on('pagebeforeshow', '#centros', function(e, data) {
+    if (!isUserLogged()) $.mobile.navigate('#login');
+    else getCentros();
+})
+.on('pagebeforeshow', '#consultas', function(e, data) {
     if (!isUserLogged()) $.mobile.navigate('#login');
 })
-.on('pagebeforeshow', '#consultas', function(e, data) {      
-    if (!isUserLogged()) $.mobile.navigate('#login');
-})
-.on('pagebeforeshow', '#altaUsuario', function(e, data) {      
+.on('pagebeforeshow', '#altaUsuario', function(e, data) {
 });
 
+// Inicializar event listeners
 function init() {
+    var favoritos = localStorage.getItem('medicosFavoritos');
+    if (favoritos === null) {
+        favoritos = [];
+        localStorage.setItem('medicosFavoritos', JSON.stringify(favoritos));
+    }
+
     $('.gotoRegistro').click(gotoRegistro);
     $('.backFromRegistro').click(backFromRegistro);
-    
+
+    // Filtro de medicos favoritos listener
+    $('#medicos .solo-fav').click(soloFav)
+
     // Login listener
     $('#login .login').on('submit', login);
 
     // Adduser listener
     $('#altaUsuario .register').on('submit', altaUsuario);
+
+    $('#fav-ico').click(toggleMedicoFavorito);
 }
 
 function login(e) {
@@ -41,7 +54,7 @@ function login(e) {
 
     $('#login .login button').attr('disabled', 'disabled');
     showLoader();
-    
+
     var form = e.target;
     var email = $(form.email).val();
     var password = $(form.password).val();
@@ -59,10 +72,10 @@ function login(e) {
     })
     .done(function(res) {
         loggedUser = res;
-        $.mobile.navigate('#inicio')
+        $.mobile.navigate('#inicio');
     })
     .fail(function(res) {
-        $('#errLogin').popup( "open" )
+        $('#errLogin').popup( "open" );
     })
     .always(function (res) {
         $('#login .login button').attr('disabled', false);
@@ -71,7 +84,7 @@ function login(e) {
 }
 
 function logout(e) {
-    sanitizeEvt();
+    sanitizeEvt(e);
 
     loggedUser = null;
 }
@@ -107,13 +120,15 @@ function altaUsuario(e) {
     })
     .done(function(res) {
         $('#exitoRegistro').popup( "open" )
-        
+
         $(form.email).val('');
         $(form.password).val('');
         $(form.name).val('');
         $(form.lastname).val('');
         $(form.documento).val('');
         $(form.telefono).val('');
+
+        $.mobile.navigate('#login');
     })
     .fail(function(res) {
         $('#errRegistro').popup( "open" )
@@ -125,7 +140,7 @@ function altaUsuario(e) {
 }
 
 function verUsuario(e) {
-    sanitizeEvt();
+    sanitizeEvt(e);
 
     $("#verUsuario").popup("open");
 }
@@ -139,20 +154,36 @@ function getMedicos() {
         dataType: 'json'
     })
     .done(function(res) {
-        console.log("res", res);
         var profesionales = res.profesionales;
 
         if (profesionales.length) {
             var lista = '';
 
             profesionales.forEach(function(profesional) {
-                lista += `<li><a onClick="verMedico(this)" data-transition="none" href="#">${profesional.apellido}, ${profesional.nombre}</a></li>`;
+                var fav = esMedicoFavorito(profesional.nombre, profesional.apellido);
+
+                lista += `
+                    <li>
+                        <a class="medico ${fav ? 'fav' : ''}" onClick="verMedico(this)" data-transition="none" href="#" nom="${profesional.nombre}" ape="${profesional.apellido}">
+                            ${profesional.apellido}, ${profesional.nombre}
+                            <span class="text-light text-italic right">${profesional.especialidad}</span>
+                        </a>
+                    </li>
+                `;
             });
         } else {
             lista = '<li>No existen medicos registrados :(</li>';
         }
 
         $('#listaMedicosGral').html(lista);
+
+        // Favoritos Primero
+        var list = $('#listaMedicosGral').find('li').sort(sortMe);
+        function sortMe(a, b) {
+            return !$(a).children().hasClass('fav') && $(b).children().hasClass('fav');
+        }
+        $('#listaMedicosGral').append(list);
+
         $('#listaMedicosGral').listview('refresh');
     })
     .fail(function(res) {
@@ -162,8 +193,121 @@ function getMedicos() {
     })
 }
 
-function verMedico(that) {
-    console.log($(that));
+function verMedico(filaMedico) {
+    showLoader();
+
+    var nombre = $(filaMedico).attr('nom');
+    var apellido = $(filaMedico).attr('ape');
+
+    $.ajax({
+        url: `${api}/getProfesionales`,
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            nombre,
+            apellido
+        }
+    })
+    .done(function(res) {
+        var medico = res.profesionales[0];
+        var avatar = (medico.foto === '') ? 'assets/avatar.png' : medico.foto;
+        var fav = esMedicoFavorito(medico.nombre, medico.apellido);
+
+        $('#med-avatar').attr('src', avatar);
+        $('#med-nombre').html(medico.nombre);
+        $('#med-apellido').html(medico.apellido);
+        $('#med-especialidad').html(medico.especialidad);
+
+        $('#fav-ico img').attr({
+            nom: medico.nombre,
+            ape: medico.apellido,
+            src: (fav) ? 'assets/star-fill.png' : 'assets/star-clear.png'
+        })
+
+        $('#verMedico').popup("open");
+    })
+    .fail(function(res) {
+
+    })
+    .always(function(res) {
+        hideLoader();
+    })
+}
+
+function toggleMedicoFavorito(evt) {
+    sanitizeEvt(evt);
+
+    var medico = {
+        nom: $(evt.target).attr('nom'),
+        ape: $(evt.target).attr('ape')
+    }
+    var encontrado = false;
+    var i = 0;
+    var favoritos = JSON.parse(localStorage.getItem('medicosFavoritos'));
+
+    if (favoritos.length > 0) {
+        while (!encontrado && i < favoritos.length) {
+            encontrado = favoritos[i].nom === medico.nom && favoritos[i].ape === medico.ape;
+            if (!encontrado) i++;
+        }
+
+        if (encontrado) {
+            favoritos.splice(i, 1);
+        } else {
+            favoritos.push(medico);
+        }
+
+        // Icono Popup
+        $('#fav-ico img').attr({
+            src: (encontrado) ? 'assets/star-clear.png' : 'assets/star-fill.png'
+        })
+
+        // Icono Lista gral
+        $(`#listaMedicosGral li a[nom='${medico.nom}'][ape='${medico.ape}']`)
+        .toggleClass('fav');
+
+        localStorage.setItem('medicosFavoritos', JSON.stringify(favoritos));
+    } else {
+        localStorage.setItem('medicosFavoritos', JSON.stringify([medico]));
+
+        // Icono Popup
+        $('#fav-ico img').attr({
+            src: 'assets/star-fill.png'
+        })
+
+        // Icono Lista gral
+        $(`#listaMedicosGral li a[nom='${medico.nom}'][ape='${medico.ape}']`)
+        .addClass('fav');
+    }
+}
+
+function esMedicoFavorito(nombre, apellido) {
+    var encontrado = false;
+    var i = 0;
+    var favoritos = JSON.parse(localStorage.getItem('medicosFavoritos'));
+
+    if (favoritos.length > 0) {
+        while (!encontrado && i < favoritos.length) {
+            encontrado = favoritos[i].nom === nombre && favoritos[i].ape === apellido;
+            if (!encontrado) i++;
+        }
+
+        return encontrado;
+    } else {
+        return false;
+    }
+}
+
+function soloFav(e) {
+    sanitizeEvt(e);
+
+    var page = $(e.target).closest('div[data-role="page"]').attr('id');
+
+    if ($(e.target).prop('checked')) {
+        $(`#${page} ul[data-role="listview"] li a`).not('.fav').closest('li').hide();
+    } else {
+        $(`#${page} ul[data-role="listview"] li a`).not('.fav').closest('li').show();
+    }
 }
 
 function showLoader() {
@@ -196,5 +340,5 @@ function backFromRegistro(e) {
 function sanitizeEvt(e) {
     e.preventDefault();
     e.stopPropagation();
-    e.stopImmediatePropagation();    
+    e.stopImmediatePropagation();
 }

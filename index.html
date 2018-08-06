@@ -5,14 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Obligatorio Taller Tecnologias</title>
 
-    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile-1.4.5.min.css">
-    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.external-png-1.4.5.min.css">
-    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.icons-1.4.5.min.css">
-    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.inline-png-1.4.5.min.css">
-    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.inline-svg-1.4.5.min.css">
-    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.structure-1.4.5.min.css">
-    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.theme-1.4.5.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="assets/favicon.png"/>
+
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile-1.4.5.min.css"/>
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.external-png-1.4.5.min.css"/>
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.icons-1.4.5.min.css"/>
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.inline-png-1.4.5.min.css"/>
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.inline-svg-1.4.5.min.css"/>
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.structure-1.4.5.min.css"/>
+    <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.theme-1.4.5.min.css"/>
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
     <div data-role="page" id="login">
@@ -82,6 +84,11 @@
         <div data-role="content">
             <h1>Listado de profesionales medicos</h1>
 
+            <div>
+                <label class="filtro">
+                    <input type="checkbox" class="solo-fav" name="solo-fav">Solo Favoritos
+                </label>
+            </div>
             <ul data-role="listview"
                 data-inset="true"
                 data-filter="true"
@@ -89,6 +96,42 @@
                 id="listaMedicosGral"
             >
             </ul>
+
+            <div data-role="popup" id="verMedico">
+                <a  href="#"
+                    data-rel="back"
+                    data-role="button"
+                    data-theme="a"
+                    data-icon="delete"
+                    data-iconpos="notext"
+                    class="ui-btn-right"
+                >
+                    Close
+                </a>
+                <div class="ui-content">
+                    <h3>Detalles de medico</h3>
+                    <div id="avatar-container" class="m-top--s m-bottom--s text-center">
+                        <img id="med-avatar" src="">
+                        <a id="fav-ico" class="top-right" href="#">
+                            <img nom="" ape="" src="">
+                        </a>
+                    </div>
+                    <table border="0">
+                        <tr>
+                            <td><b>Nombre:</b></td>
+                            <td><span id="med-nombre"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Apellido:</b></td>
+                            <td><span id="med-apellido"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Especialidad:</b></td>
+                            <td><span id="med-especialidad"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
         </div> <!-- Content -->
 
         <div data-role="footer" data-position="fixed">
@@ -109,12 +152,15 @@
         </div> <!-- Header -->
 
         <div data-role="content">
-            <h1>Page 2</h1>
+            <h1>Listado de Centros Medicos</h1>
 
-            <form>
-                <label for="slider-2">Input slider:</label>
-                <input type="range" name="slider" id="slider-2" value="25" min="0" max="100" />
-            </form>
+            <ul data-role="listview"
+                data-inset="true"
+                data-filter="true"
+                data-filter-placeholder="Buscar Centros"
+                id="listaCentrosGral"
+            >
+            </ul>
         </div> <!-- Content -->
 
         <div data-role="footer" data-position="fixed">

@@ -1,7 +1,60 @@
+.medico.fav::before {
+    content: "\2605";
+    color: gold;
+}
+
+#med-avatar {
+    border-radius: 50%;
+    height: 120px;
+    width: 120px;
+}
+
+#avatar-container {
+    position: relative;
+}
+
+#avatar-container a img {
+    width: 32px;
+}
+
+.filtro {
+    display: inline-block !important;
+}
+
+/* ************************************************************************** */
+/***************************** CLASES UTILITARIAS *****************************/
+/* ************************************************************************** */
+
+/* POSICION */
 .right {
     float: right;
 }
 
+.top-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.top-left {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.bottom-left {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+/* ALERTS */
 .warning {
     background-color: orange;
 }
@@ -10,14 +63,30 @@
     background-color: green;
 }
 
+/* ESPACIADO */
 .m-top--s {
     margin-top: 0.5em !important;
 }
 
-text-right {
-    text-align: right !important;
+.m-bottom--s {
+    margin-bottom: 0.5em !important;
 }
 
-text-center {
-    text-align: center !important;
+/* TEXTO / ALINEACION */
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-italic {
+    font-style: italic;
+}
+
+.text-light {
+    color: grey;
+    font-size: 0.8rem;
+    font-weight: normal;
 }
