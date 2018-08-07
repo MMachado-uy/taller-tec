@@ -1,4 +1,5 @@
 const api = 'http://medicort.tribus.com.uy';
+const mapsAPI = 'AIzaSyD5yvc9GHlDhrlMBfiIEYgPP9aYR-tZFj4';
 var loggedUser = null;
 var navHist = '';
 
@@ -40,8 +41,9 @@ function init() {
     // Filtro de medicos favoritos listener
     $('#medicos .solo-fav').click(soloFav);
 
-    // Calificar listener
-    $('#med-calif').click(calificarMedico);
+    // Calificar listeners
+    $('#med-calif').click(abrirCalificarMedico);
+    $('#submit-calif').click(puntuarMedico);
 
     // Login listener
     $('#login .login').on('submit', login);
@@ -313,13 +315,15 @@ function soloFav(e) {
     }
 }
 
-function calificarMedico(e) {
+function abrirCalificarMedico(e) {
 
     $('#verMedico').popup("close");
 
     $('#verMedico').on('popupafterclose', function() {
 
+        // Unbind evt listener
         $('#verMedico').off('popupafterclose');
+
         var medico = {
             nom: $('#med-nombre').html(),
             ape: $('#med-apellido').html()
@@ -331,21 +335,106 @@ function calificarMedico(e) {
         $('#calificacion-slide').slider('refresh');
 
         $('#califMedico').popup("open");
-        console.log(medico)
     })
 }
 
-function puntuarMedico(nombre, apellido, puntaje) {
-    $.ajax()
+function puntuarMedico(e) {
+    sanitizeEvt(e);
+    showLoader();
+    console.log("e", e);
+
+    $('#submit-calif').attr('disabled', 'disabled');
+
+    var nombre = $('#med-nombre').html();
+    var apellido = $('#med-apellido').html();
+    var puntaje = $('#calificacion-slide').val();
+
+    $.ajax({
+        url: `${api}/asignarPuntajeAProfesional`,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            nombre,
+            apellido,
+            puntaje
+        }
+    })
+    .done(function(res) {
+        console.log("DONE res >>>>", res);
+        // Done
+    })
+    .fail(function(res) {
+        console.log("FAIL res >>>>", res);
+        // Fail
+    })
+    .always(function(res) {
+        hideLoader();
+        $('#submit-calif').attr('disabled', false);
+        $('#califMedico').popup("close");
+    })
 }
 
-function showLoader() {
-    $.mobile.loading("show");
+function getCentros() {
+    showLoader();
+
+    $.ajax({
+        url: `${api}/getCentrosMedicos`,
+        type: 'GET',
+        dataType: 'json'
+    })
+    .done(function(res) {
+        var centrosMedicos = res.centrosMedicos;
+
+        if (centrosMedicos.length) {
+            var lista = '';
+
+            centrosMedicos.forEach(function(centro) {
+                lista += `
+                    <li>
+                        <a class="centro" onClick="verCentro(this)" data-transition="none" href="#" nom="${centro.nombre}" dir="${centro.direccion}" lat="${centro.localizacion.latitud}" lon="${centro.localizacion.longitud}">
+                            ${centro.nombre}
+                            <span class="text-light text-italic right">${centro.direccion}</span>
+                        </a>
+                    </li>
+                `;
+            });
+        } else {
+            lista = '<li>No existen centros medicos registrados :(</li>';
+        }
+
+        $('#listaCentrosGral').html(lista);
+
+        $('#listaCentrosGral').listview('refresh');
+    })
+    .fail(function(res) {
+
+    })
+    .always(function(res) {
+        hideLoader();
+    })
 }
 
-function hideLoader() {
-    $.mobile.loading("hide");
-};
+function verCentro(filaCentro) {
+    console.log($(filaCentro));
+
+    var lat = parseFloat($(filaCentro).attr('lat'));
+    var lon = parseFloat($(filaCentro).attr('lon'));
+
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: lat, lng: lon},
+        zoom: 8
+    });
+
+    $('#cen-direccion').html($(filaCentro).attr('dir'));
+    $('#cen-nombre').html($(filaCentro).attr('nom'));
+
+    $('#verCentro').popup('open');
+
+}
+
+function showLoader() { $.mobile.loading("show") }
+
+function hideLoader() { $.mobile.loading("hide") }
 
 function isUserLogged() {
     return true;
