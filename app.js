@@ -341,7 +341,6 @@ function abrirCalificarMedico(e) {
 function puntuarMedico(e) {
     sanitizeEvt(e);
     showLoader();
-    console.log("e", e);
 
     $('#submit-calif').attr('disabled', 'disabled');
 
@@ -415,15 +414,20 @@ function getCentros() {
 }
 
 function verCentro(filaCentro) {
-    console.log($(filaCentro));
+    var lat = -34.9065866//parseFloat($(filaCentro).attr('lat'));
+    var lon = -56.1994113//parseFloat($(filaCentro).attr('lon'));
 
-    var lat = parseFloat($(filaCentro).attr('lat'));
-    var lon = parseFloat($(filaCentro).attr('lon'));
-
-    var map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: lat, lng: lon},
-        zoom: 8
-    });
+    var map = L.map('map',{
+        center: [lat, lon],
+        zoom: 13
+    });//.setView([lat, lon], 13);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibW1hY2hhZG8iLCJhIjoiY2pra2d2c3FrMDFhMjN4dGgxczJ5Mjk2MSJ9.q7Rk9IIkfIZAqgDSuX8LUA', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox.streets',
+        accessToken: 'pk.eyJ1IjoibW1hY2hhZG8iLCJhIjoiY2pra2d2c3FrMDFhMjN4dGgxczJ5Mjk2MSJ9.q7Rk9IIkfIZAqgDSuX8LUA'
+    }).addTo(map);
+    var marker = L.marker([lat, lon]).addTo(map);
 
     $('#cen-direccion').html($(filaCentro).attr('dir'));
     $('#cen-nombre').html($(filaCentro).attr('nom'));
