@@ -25,6 +25,11 @@ $(document)
     if (!isUserLogged()) $.mobile.navigate('#login');
 })
 .on('pagebeforeshow', '#altaUsuario', function(e, data) {
+})
+.on('pagebeforeshow', '#nuevaConsulta', function(e, data) {
+    if (!isUserLogged()) $.mobile.navigate('#login');
+    else prepararConsulta(e, data);  
+    
 });
 
 // Inicializar event listeners
@@ -33,6 +38,19 @@ function init() {
     if (favoritos === null) {
         favoritos = [];
         localStorage.setItem('medicosFavoritos', JSON.stringify(favoritos));
+    }
+
+    if ("geolocation" in navigator) {
+        /* la geolocalización está disponible */
+        navigator.geolocation.getCurrentPosition(function(res) {
+            
+            console.log('Geo cargada')
+
+            sessionStorage.setItem('lat', res.coords.latitude)
+            sessionStorage.setItem('lon', res.coords.longitude)
+        }, function(err) {
+            console.log('Geolocation error: ', err)
+        });
     }
 
     $('.gotoRegistro').click(gotoRegistro);
@@ -52,7 +70,15 @@ function init() {
     $('#altaUsuario .register').on('submit', altaUsuario);
 
     $('#fav-ico').click(toggleMedicoFavorito);
+
+    $('#sche-medico').on('change', listarCentrosParaConsulta);
+
+    $('#newSchedule').on('submit', guardarConsulta);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Metodos de la aplicacion
+////////////////////////////////////////////////////////////////////////////////
 
 function login(e) {
     sanitizeEvt(e);
@@ -414,25 +440,168 @@ function getCentros() {
 }
 
 function verCentro(filaCentro) {
-    var lat = -34.9065866//parseFloat($(filaCentro).attr('lat'));
-    var lon = -56.1994113//parseFloat($(filaCentro).attr('lon'));
+    var lat = parseFloat($(filaCentro).attr('lat'));
+    console.log("lat", lat);
+    var lon = parseFloat($(filaCentro).attr('lon'));
+    console.log("lon", lon);
+    var location = {
+        lat: parseFloat(sessionStorage.getItem('lat')),
+        lon: parseFloat(sessionStorage.getItem('lon'))
+    }
 
-    var map = L.map('map',{
-        center: [lat, lon],
-        zoom: 13
-    });//.setView([lat, lon], 13);
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibW1hY2hhZG8iLCJhIjoiY2pra2d2c3FrMDFhMjN4dGgxczJ5Mjk2MSJ9.q7Rk9IIkfIZAqgDSuX8LUA', {
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-        maxZoom: 18,
-        id: 'mapbox.streets',
-        accessToken: 'pk.eyJ1IjoibW1hY2hhZG8iLCJhIjoiY2pra2d2c3FrMDFhMjN4dGgxczJ5Mjk2MSJ9.q7Rk9IIkfIZAqgDSuX8LUA'
-    }).addTo(map);
-    var marker = L.marker([lat, lon]).addTo(map);
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    var directionsService = new google.maps.DirectionsService;
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 14,
+        center: {lat: lat, lng: lon}
+    });
+
+    if (location.lat != null && location.lon != null) {
+        directionsDisplay.setMap(map);
+        calculateAndDisplayRoute(directionsService, directionsDisplay, lat, lon, location);        
+    }
 
     $('#cen-direccion').html($(filaCentro).attr('dir'));
     $('#cen-nombre').html($(filaCentro).attr('nom'));
 
     $('#verCentro').popup('open');
+}
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay, dlat, dlon, origin) {
+    var selectedMode = "DRIVING";
+
+    directionsService.route({
+        origin: {
+            lat: origin.lat, 
+            lng: origin.lon
+        },
+        destination: {
+            lat: dlat, 
+            lng: dlon
+        },
+        travelMode: google.maps.TravelMode[selectedMode]
+    }, function(response, status) {
+        if (status == 'OK') {
+            directionsDisplay.setDirections(response);
+        } else {
+            window.alert('Directions request failed due to ' + status);
+        }
+    });
+}
+
+function prepararConsulta(e, data) {
+    showLoader();
+    $('input, select').attr('disabled', 'disabled');
+
+    $.ajax({
+        url: `${api}/getProfesionales`,
+        type: 'GET',
+        dataType: 'json'
+    })
+    .done(function(res) {
+        var profesionales = res.profesionales;
+
+        if (profesionales.length) {
+            var lista = '<option value="-" selected>Seleccione un profesional</option>';
+
+            profesionales.forEach(function(profesional) {
+                lista += `
+                    <option value="${profesional.id}">
+                        ${profesional.apellido}, ${profesional.nombre}
+                    </option>
+                `;
+            });
+            
+            $('#sche-medico').html(lista);
+            $('#sche-medico').selectmenu('refresh', true);
+
+            $('input, select').not('#sche-centro').attr('disabled', false);
+        }
+
+    })
+    .fail(function(res) {
+
+    })
+    .always(function(res) {
+        hideLoader();
+    })
+}
+
+function listarCentrosParaConsulta(e) {
+    var id = $(e.target).val();
+
+    if (id === '-') return false;
+
+    $.ajax({
+        url: `${api}/getDetalleProfesional`,
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            id
+        }
+    })
+    .done(function(res) {
+        var centrosProfesional = [];
+        centrosProfesional.push(res.profesional.centroMedico);
+
+        if (centrosProfesional.length) {
+            var lista = '<option value="-" selected>Seleccione un centro medico</option>';
+
+            centrosProfesional.forEach(function(centro) {
+                lista += `
+                    <option value="${centro.id}">
+                        ${centro.nombre}
+                    </option>
+                `;
+            });
+            
+            $('#sche-centro').html(lista);
+            $('#sche-centro').selectmenu('refresh', true);
+
+            $('#sche-centro').attr('disabled', false);
+        }
+    })
+    .fail(function(res) {
+
+    })
+    .always(function(res) {
+
+    })
+}
+
+function guardarConsulta(e) {
+    sanitizeEvt(e);
+
+    var form = e.target
+    var email = $(form['sche-email']).val();
+    var medico = parseInt($(form['sche-medico']).val());
+    var centro = parseInt($(form['sche-centro']).val());
+    var fecha = $(form['sche-fecha']).val();
+
+    var f = new Date(fecha);
+    fecha = `${f.getDate()}/${f.getMonth() + 1}/${f.getFullYear()} ${f.getHours()}:${f.getMinutes()}`;
+
+
+    $.ajax({
+        url: `${api}/fijarConsultaMedica`,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            email: email,
+            fechaHora: fecha,
+            idProfesional: medico,
+            idCentroMedico: centro
+        }
+    })
+    .done(function(res) {
+
+    })
+    .fail(function(res) {
+
+    })
+    .always(function(res) {
+
+    })
 
 }
 
@@ -443,6 +612,10 @@ function hideLoader() { $.mobile.loading("hide") }
 function isUserLogged() {
     return true;
     // return loggedUser !== null;
+}
+
+function gmapload() {
+    console.log('Google Maps lib loaded')
 }
 
 function gotoRegistro(e) {
@@ -457,6 +630,12 @@ function backFromRegistro(e) {
 
     $.mobile.navigate(navHist);
     navHist = '';
+}
+
+function backFromCOnsulta(e) {
+    sanitizeEvt(e);
+
+    $.mobile.navigate('medicos');
 }
 
 function sanitizeEvt(e) {

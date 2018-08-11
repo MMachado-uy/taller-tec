@@ -7,7 +7,6 @@
 
     <link rel="icon" type="image/png" href="assets/favicon.png"/>
 
-    <link rel="stylesheet" href="lib/leaflet/leaflet.css"/>
     <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile-1.4.5.min.css"/>
     <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.external-png-1.4.5.min.css"/>
     <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.icons-1.4.5.min.css"/>
@@ -15,7 +14,6 @@
     <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.inline-svg-1.4.5.min.css"/>
     <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.structure-1.4.5.min.css"/>
     <link rel="stylesheet" href="lib/jquery-mobile/jquery.mobile.theme-1.4.5.min.css"/>
-    <!-- <link rel="stylesheet" href="lib/jquery-mobile/jquery.ui.datepicker.mobile.css"/> -->
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
@@ -141,7 +139,7 @@
                         </tr>
                     </table>
                     <button id="med-calif" class="ui-btn ui-btn-inline">Calificar</button>
-                    <button id="schedule" class="ui-btn ui-btn-inline">Agendar Consulta</button>
+                    <a href="#nuevaConsulta" class="ui-btn ui-btn-inline">Agendar Consulta</a>
                 </div>
             </div> <!-- Ver Popup -->
             <div data-role="popup" id="califMedico">
@@ -327,62 +325,43 @@
 
     <div data-role="page" id="nuevaConsulta">
         <div data-role="header">
-            <a class="backFromRegistro" data-transition="none" href="#" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <a class="backFromConsulta" data-transition="none" href="#" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <h1>Agendar Consulta</h1>
         </div> <!-- Header -->
         <div data-role="content">
-            <form class="newSchedule">
+            <form id="newSchedule">
                 <div class="ui-content">
                     <h3>Ingrese detalles de su consulta</h3>
                     <div class="ui-field-contain">
                         <!-- email: String, fechaHora: String (formato: dd/MM/yyyy HH:mm), nombreProfesional: String, apellidoProfesional: String, nombreCentroMedico: String -->
-                        <label for="sche-email">Email:</label>
-                        <input type="email" name="email" id="sche-email" value="" placeholder="jperez@adinet.com.uy" data-theme="a" />
+                        <div>
+                            <label for="sche-email">Email:</label>
+                            <input required type="email" name="email" id="sche-email" value="" placeholder="jperez@adinet.com.uy" data-theme="a" />
+                        </div>
 
-                        <label class="m-top--s" for="sche-fecha">Fecha de la consulta:</label>
-                        <input type="text" data-role="date">
-                        <input type="datetime-local" value=""/>
+                        <div>
+                            <label class="m-top--s" for="sche-fecha">Fecha de la consulta:</label>
+                            <input required id="sche-fecha" type="datetime-local" value=""/>
+                        </div>
 
-                        <label class="m-top--s" for="email">Hora de la consulta:</label>
-                        <select name="sche-hora" id="sche-hora">
-                            <option value="01">01</option>
-                            <option value="02">02</option>
-                            <option value="03">03</option>
-                            <option value="04">04</option>
-                            <option value="05">05</option>
-                            <option value="06">06</option>
-                            <option value="07">07</option>
-                            <option value="08">08</option>
-                            <option value="09">09</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                        </select>
-                        <div class="m-top--s"></div>
-                        <select name="sche-minutos" id="sche-minutos">
-                                <option value="00">00</option>
-                                <option value="15">15</option>
-                                <option value="30">30</option>
-                                <option value="45">45</option>
-                        </select>
-                        <div class="m-top--s"></div>
-                        <select name="sche-ampm" id="sche-ampm">
-                                <option value="am">AM</option>
-                                <option value="pm">PM</option>
-                        </select>
-
-                        <label class="m-top--s" for="sche-nom-prof">Nombre del Medico:</label>
-                        <input type="text" name="sche-nom-prof" id="sche-nom-prof" value="" placeholder="Greg" data-theme="a" />
-
-                        <label class="m-top--s" for="sche-ape-prof">Apellido del Medico:</label>
-                        <input type="text" name="sche-ape-prof" id="sche-ape-prof" value="" placeholder="House" data-theme="a" />
-
-                        <select name="sche-centro" id="sche-centro"></select>
+                        <div>
+                            <label class="m-top--s" for="sche-medico">Medico de la consulta:</label>
+                            <select required name="sche-medico" id="sche-medico">
+                                <option value="-" selected>No hay profesionales disponibles</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="m-top--s" for="sche-centro">Centro:</label>
+                            <select required name="sche-centro" id="sche-centro">
+                                <option value="-" selected>No hay centros disponibles</option>
+                            </select>
+                        </div>
                     </div>
                   <button type="submit" data-theme="b">Guardar</button>
                 </div>
             </form>
-            <div data-role="popup" id="errRegistro">
+            <div data-role="popup" id="errConsulta">
                 <a  href="#"
                     data-rel="back"
                     data-role="button"
@@ -394,10 +373,10 @@
                     Close
                 </a>
                 <div class="warning ui-content">
-                    <p>Hubo un problema al registrar el nuevo usuario</p>
+                    <p>Hubo un problema registrando la consulta</p>
                 </div>
             </div>
-            <div data-role="popup" id="exitoRegistro">
+            <div data-role="popup" id="exitoConsulta">
                 <a  href="#"
                     data-rel="back"
                     data-role="button"
@@ -409,17 +388,16 @@
                     Close
                 </a>
                 <div class="success ui-content">
-                    <p>Usuario creado con exito</p>
+                    <p>Consulta registrada con exito</p>
                 </div>
             </div>
         </div> <!-- Content -->
     </div> <!-- Page -->
 
-    <script src="lib/leaflet/leaflet.js"></script>
     <script src="lib/jquery-1.12.4.min.js"></script>
     <script src="lib/jquery-mobile/jquery.mobile-1.4.5.min.js"></script>
-    <!-- <script src="lib/jquery-mobile/jQuery.ui.datepicker.js"></script>
-    <script src="lib/jquery-mobile/jquery.ui.datepicker.mobile.js"></script> -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDhfTvXeR1_KtzXelJWoMu64w9RaZ7bmE8&callback=gmapload"
+            async defer></script>
     <script src="app.js"></script>
 </body>
 </html>
