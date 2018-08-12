@@ -60,25 +60,26 @@
     <div data-role="page" id="inicio">
         <div data-role="header">
             <h1>Inicio</h1>
+            <a href="#login" data-icon="forward">Salir</a>
         </div> <!-- Header -->
 
         <div data-role="content">
             <h1 id="bienvenida"></h1>
 
             <ul data-role="listview" data-inset="true" data-filter="false">
-                <li><a class="gotoRegistro" data-transition="none" href="#">Alta Usuarios</a></li>
-                <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
-                <li><a class="" data-transition="none" href="#centros">Centros</a></li>
-                <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
+                <li><a class="gotoRegistro" data-transition="slide" href="#">Alta Usuarios</a></li>
+                <li><a class="" data-transition="slide" href="#medicos">Medicos</a></li>
+                <li><a class="" data-transition="slide" href="#centros">Centros</a></li>
+                <li><a class="" data-transition="slide" href="#consultas">Consultas</a></li>
             </ul>
         </div> <!-- Content -->
     </div> <!-- Page -->
 
     <div data-role="page" id="medicos">
-        <div data-role="header">
-            <a class="" data-transition="none" href="#inicio" data-icon="home" data-direction="reverse">Home</a>
+        <div data-role="header" data-id="top">
+            <a class="" data-transition="slide" href="#inicio" data-icon="home" data-direction="reverse">Inicio</a>
             <h1>Medicos</h1>
-            <a href="#" data-icon="forward">Logout</a>
+            <a href="#login" data-icon="forward">Salir</a>
         </div> <!-- Header -->
 
         <div data-role="content">
@@ -139,7 +140,7 @@
                         </tr>
                     </table>
                     <button id="med-calif" class="ui-btn ui-btn-inline">Calificar</button>
-                    <a href="#nuevaConsulta" class="ui-btn ui-btn-inline">Agendar Consulta</a>
+                    <a href="#" id="goToConsulta" class="ui-btn ui-btn-inline">Agendar Consulta</a>
                 </div>
             </div> <!-- Ver Popup -->
             <div data-role="popup" id="califMedico">
@@ -163,24 +164,25 @@
 
                     <button id="submit-calif" class="ui-btn ui-btn-inline">Calificar</button>
                 </div>
-            </div> <!-- Ver Popup -->
+            </div> <!-- Calif Popup -->
         </div> <!-- Content -->
 
-        <div data-role="footer" data-position="fixed">
+        <div data-role="footer" data-position="fixed" data-id="footer">
             <div data-role="navbar">
                 <ul>
-                    <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#medicos">Medicos</a></li>
-                    <li><a class="" data-transition="none" href="#centros">Centros</a></li>
-                    <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
+                    <li><a class="ui-btn-active" data-transition="slide" href="#medicos">Medicos</a></li>
+                    <li><a class="" data-transition="slide" href="#centros">Centros</a></li>
+                    <li><a class="" data-transition="slide" href="#consultas">Consultas</a></li>
                 </ul>
             </div>
         </div> <!-- Footer -->
     </div> <!-- Page -->
 
     <div data-role="page" id="centros">
-        <div data-role="header">
-            <a class="" data-transition="none" href="#inicio" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+        <div data-role="header" data-id="top">
+            <a class="" data-transition="slide" href="#inicio" data-icon="home" data-direction="reverse">Inicio</a>
             <h1>Centros</h1>
+            <a href="#login" data-icon="forward">Salir</a>
         </div> <!-- Header -->
 
         <div data-role="content">
@@ -221,38 +223,50 @@
             </div> <!-- Ver Popup -->
         </div> <!-- Content -->
 
-        <div data-role="footer" data-position="fixed">
+        <div data-role="footer" data-position="fixed" data-id="footer">
             <div data-role="navbar">
                 <ul>
-                    <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
-                    <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#centros">Centros</a></li>
-                    <li><a class="" data-transition="none" href="#consultas">Consultas</a></li>
+                    <li><a class="" data-transition="slide" href="#medicos">Medicos</a></li>
+                    <li><a class="ui-btn-active" data-transition="slide" href="#centros">Centros</a></li>
+                    <li><a class="" data-transition="slide" href="#consultas">Consultas</a></li>
                 </ul>
             </div>
         </div> <!-- Footer -->
     </div> <!-- Page -->
 
     <div data-role="page" id="consultas">
-        <div data-role="header">
-            <a class="" data-transition="none" href="#inicio" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+        <div data-role="header" data-id="top">
+            <a class="" data-transition="slide" href="#inicio" data-icon="home" data-direction="reverse">Inicio</a>
             <h1>Consultas</h1>
+            <a href="#login" data-icon="forward">Salir</a>
         </div> <!-- Header -->
 
         <div data-role="content">
-            <h1>Page 2</h1>
-
-            <form>
-                <label for="slider-3">Input slider:</label>
-                <input type="range" name="slider" id="slider-3" value="25" min="0" max="100" />
-            </form>
+            <h1>Consultas reservadas</h1>
+            <div id="listadoConsultas" data-role="collapsible-set"></div>
+            <div data-role="popup" id="errConsultas">
+                <a  href="#"
+                    data-rel="back"
+                    data-role="button"
+                    data-theme="a"
+                    data-icon="delete"
+                    data-iconpos="notext"
+                    class="ui-btn-right"
+                >
+                    Close
+                </a>
+                <div class="warning ui-content">
+                    <p>Hubo un problema al listar las consultas</p>
+                </div>
+            </div>
         </div> <!-- Content -->
 
-        <div data-role="footer" data-position="fixed">
+        <div data-role="footer" data-position="fixed" data-id="footer">
             <div data-role="navbar">
                 <ul>
-                    <li><a class="" data-transition="none" href="#medicos">Medicos</a></li>
-                    <li><a class="" data-transition="none" href="#centros">Centros</a></li>
-                    <li><a class="ui-btn-active ui-state-persist" data-transition="none" href="#consultas">Consultas</a></li>
+                    <li><a class="" data-transition="slide" href="#medicos">Medicos</a></li>
+                    <li><a class="" data-transition="slide" href="#centros">Centros</a></li>
+                    <li><a class="ui-btn-active" data-transition="slide" href="#consultas">Consultas</a></li>
                 </ul>
             </div>
         </div> <!-- Footer -->
@@ -260,7 +274,7 @@
 
     <div data-role="page" id="altaUsuario">
         <div data-role="header">
-            <a class="backFromRegistro" data-transition="none" href="#" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
+            <a class="backFromRegistro" data-transition="slide" href="#" data-icon="home" data-iconpos="notext" data-direction="reverse">Home</a>
             <h1>Alta de Usuarios</h1>
         </div> <!-- Header -->
         <div data-role="content">
@@ -321,6 +335,15 @@
                 </div>
             </div>
         </div> <!-- Content -->
+        <div data-role="footer" data-position="fixed" data-id="footer">
+                <div data-role="navbar">
+                    <ul>
+                        <li><a class="" data-transition="slide" href="#medicos">Medicos</a></li>
+                        <li><a class="" data-transition="slide" href="#centros">Centros</a></li>
+                        <li><a class="" data-transition="slide" href="#consultas">Consultas</a></li>
+                    </ul>
+                </div>
+            </div> <!-- Footer -->
     </div> <!-- Page -->
 
     <div data-role="page" id="nuevaConsulta">
@@ -333,29 +356,24 @@
                 <div class="ui-content">
                     <h3>Ingrese detalles de su consulta</h3>
                     <div class="ui-field-contain">
-                        <!-- email: String, fechaHora: String (formato: dd/MM/yyyy HH:mm), nombreProfesional: String, apellidoProfesional: String, nombreCentroMedico: String -->
                         <div>
                             <label for="sche-email">Email:</label>
-                            <input required type="email" name="email" id="sche-email" value="" placeholder="jperez@adinet.com.uy" data-theme="a" />
+                            <div class="text-label" id="sche-email" value="" placeholder="jperez@adinet.com.uy" data-theme="a"></div>
+                        </div>
+
+                        <div>
+                            <label class="m-top--s" for="sche-medico">Medico de la consulta:</label>
+                            <div class="text-label" id="sche-medico"></div>
+                        </div>
+
+                        <div>
+                            <label class="m-top--s" for="sche-centro">Centro:</label>
+                            <div class="text-label" id="sche-centro"></div>
                         </div>
 
                         <div>
                             <label class="m-top--s" for="sche-fecha">Fecha de la consulta:</label>
                             <input required id="sche-fecha" type="datetime-local" value=""/>
-                        </div>
-
-                        <div>
-                            <label class="m-top--s" for="sche-medico">Medico de la consulta:</label>
-                            <select required name="sche-medico" id="sche-medico">
-                                <option value="-" selected>No hay profesionales disponibles</option>
-                            </select>
-                        </div>
-                        
-                        <div>
-                            <label class="m-top--s" for="sche-centro">Centro:</label>
-                            <select required name="sche-centro" id="sche-centro">
-                                <option value="-" selected>No hay centros disponibles</option>
-                            </select>
                         </div>
                     </div>
                   <button type="submit" data-theme="b">Guardar</button>
@@ -389,6 +407,12 @@
                 </a>
                 <div class="success ui-content">
                     <p>Consulta registrada con exito</p>
+                    <div class="text-center" id="countdown">
+                        <div id="countdown-number"></div>
+                        <svg>
+                            <circle r="18" cx="20" cy="20"></circle>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div> <!-- Content -->

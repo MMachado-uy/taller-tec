@@ -1,17 +1,14 @@
 const api = 'http://medicort.tribus.com.uy';
 const mapsAPI = 'AIzaSyD5yvc9GHlDhrlMBfiIEYgPP9aYR-tZFj4';
-var loggedUser = null;
-var navHist = '';
 
 $(document)
 .on('pageinit', init)
-.on('pagebeforeshow', '#login', function(e, data) {})
+.on('pagebeforeshow', '#login', function(e, data) {
+    sessionStorage.removeItem('loggedUser');
+})
 .on('pagebeforeshow', '#inicio', function(e, data) {
-    if (isUserLogged()) {
-        $('#bienvenida').html(`Bienvenido, ${loggedUser.id_usuario}`);
-    } else {
-        $.mobile.navigate('#login')
-    }
+    if (!isUserLogged()) $.mobile.navigate('#login');
+    else loadWelcome();
 })
 .on('pagebeforeshow', '#medicos', function(e, data) {
     if (!isUserLogged()) $.mobile.navigate('#login');
@@ -23,13 +20,12 @@ $(document)
 })
 .on('pagebeforeshow', '#consultas', function(e, data) {
     if (!isUserLogged()) $.mobile.navigate('#login');
-})
-.on('pagebeforeshow', '#altaUsuario', function(e, data) {
+    else listarConsultas();
 })
 .on('pagebeforeshow', '#nuevaConsulta', function(e, data) {
     if (!isUserLogged()) $.mobile.navigate('#login');
-    else prepararConsulta(e, data);  
-    
+})
+.on('pagebeforeshow', '#altaUsuario', function(e, data) {
 });
 
 // Inicializar event listeners
@@ -43,7 +39,7 @@ function init() {
     if ("geolocation" in navigator) {
         /* la geolocalización está disponible */
         navigator.geolocation.getCurrentPosition(function(res) {
-            
+
             console.log('Geo cargada')
 
             sessionStorage.setItem('lat', res.coords.latitude)
@@ -55,25 +51,15 @@ function init() {
 
     $('.gotoRegistro').click(gotoRegistro);
     $('.backFromRegistro').click(backFromRegistro);
-
-    // Filtro de medicos favoritos listener
+    $('.backFromConsulta').click(backFromConsulta);
     $('#medicos .solo-fav').click(soloFav);
-
-    // Calificar listeners
     $('#med-calif').click(abrirCalificarMedico);
     $('#submit-calif').click(puntuarMedico);
-
-    // Login listener
     $('#login .login').on('submit', login);
-
-    // Adduser listener
     $('#altaUsuario .register').on('submit', altaUsuario);
-
     $('#fav-ico').click(toggleMedicoFavorito);
-
-    $('#sche-medico').on('change', listarCentrosParaConsulta);
-
     $('#newSchedule').on('submit', guardarConsulta);
+    $('#goToConsulta').click(prepararConsulta);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +88,7 @@ function login(e) {
         data: payload,
     })
     .done(function(res) {
-        loggedUser = res;
+        sessionStorage.setItem('loggedUser', JSON.stringify(res));
         $.mobile.navigate('#inicio');
     })
     .fail(function(res) {
@@ -117,7 +103,13 @@ function login(e) {
 function logout(e) {
     sanitizeEvt(e);
 
-    loggedUser = null;
+    sessionStorage.removeItem('loggedUser');
+    $.mobile.navigate()
+}
+
+function loadWelcome() {
+    var loggedUser = JSON.parse(sessionStorage.getItem('loggedUser'));
+    $('#bienvenida').html(`Bienvenido, ${loggedUser.nombre}`);
 }
 
 function altaUsuario(e) {
@@ -162,7 +154,7 @@ function altaUsuario(e) {
         $.mobile.navigate('#login');
     })
     .fail(function(res) {
-        $('#errRegistro').popup( "open" )
+        $('#errRegistro').popup( "open" );
     })
     .always(function (res) {
         $('#altaUsuario .register button').attr('disabled', false);
@@ -195,7 +187,7 @@ function getMedicos() {
 
                 lista += `
                     <li>
-                        <a class="medico ${fav ? 'fav' : ''}" onClick="verMedico(this)" data-transition="none" href="#" nom="${profesional.nombre}" ape="${profesional.apellido}">
+                        <a class="medico ${fav ? 'fav' : ''}" onClick="verMedico(this)" data-transition="none" href="#" profId="${profesional.id}" nom="${profesional.nombre}" ape="${profesional.apellido}">
                             ${profesional.apellido}, ${profesional.nombre}
                             <span class="text-light text-italic right">${profesional.especialidad}</span>
                         </a>
@@ -244,6 +236,8 @@ function verMedico(filaMedico) {
         var avatar = (medico.foto === '') ? 'assets/avatar.png' : medico.foto;
         var fav = esMedicoFavorito(medico.nombre, medico.apellido);
 
+        sessionStorage.setItem('medicoActual', JSON.stringify(medico))
+
         $('#med-avatar').attr('src', avatar);
         $('#med-nombre').html(medico.nombre);
         $('#med-apellido').html(medico.apellido);
@@ -274,19 +268,23 @@ function toggleMedicoFavorito(e) {
     }
     var encontrado = false;
     var i = 0;
+    var usuarioActual = JSON.parse(sessionStorage.getItem('loggedUser')).id_usuario;
     var favoritos = JSON.parse(localStorage.getItem('medicosFavoritos'));
 
-    if (favoritos.length > 0) {
-        while (!encontrado && i < favoritos.length) {
-            encontrado = favoritos[i].nom === medico.nom && favoritos[i].ape === medico.ape;
+    if (favoritos.length > 0 && favoritos[usuarioActual] !== null) {
+        var favoritosUsuario = favoritos[usuarioActual]
+        while (!encontrado && i < favoritosUsuario.length) {
+            encontrado = favoritosUsuario[i].nom === medico.nom && favoritosUsuario[i].ape === medico.ape;
             if (!encontrado) i++;
         }
 
         if (encontrado) {
-            favoritos.splice(i, 1);
+            favoritosUsuario.splice(i, 1);
         } else {
-            favoritos.push(medico);
+            favoritosUsuario.push(medico);
         }
+
+        favoritos[usuarioActual] = favoritosUsuario;
 
         // Icono Popup
         $('#fav-ico img').attr({
@@ -299,7 +297,8 @@ function toggleMedicoFavorito(e) {
 
         localStorage.setItem('medicosFavoritos', JSON.stringify(favoritos));
     } else {
-        localStorage.setItem('medicosFavoritos', JSON.stringify([medico]));
+        favoritos[usuarioActual] = [medico];
+        localStorage.setItem('medicosFavoritos', JSON.stringify(favoritos));
 
         // Icono Popup
         $('#fav-ico img').attr({
@@ -316,10 +315,13 @@ function esMedicoFavorito(nombre, apellido) {
     var encontrado = false;
     var i = 0;
     var favoritos = JSON.parse(localStorage.getItem('medicosFavoritos'));
+    var usuarioActual = JSON.parse(sessionStorage.getItem('loggedUser')).id_usuario;
 
-    if (favoritos.length > 0) {
-        while (!encontrado && i < favoritos.length) {
-            encontrado = favoritos[i].nom === nombre && favoritos[i].ape === apellido;
+    if (favoritos.length > 0 && favoritos[usuarioActual] !== null) {
+        var favoritosUsuario = favoritos[usuarioActual];
+
+        while (!encontrado && i < favoritosUsuario.length) {
+            encontrado = favoritosUsuario[i].nom === nombre && favoritosUsuario[i].ape === apellido;
             if (!encontrado) i++;
         }
 
@@ -346,7 +348,6 @@ function abrirCalificarMedico(e) {
     $('#verMedico').popup("close");
 
     $('#verMedico').on('popupafterclose', function() {
-
         // Unbind evt listener
         $('#verMedico').off('popupafterclose');
 
@@ -441,9 +442,7 @@ function getCentros() {
 
 function verCentro(filaCentro) {
     var lat = parseFloat($(filaCentro).attr('lat'));
-    console.log("lat", lat);
     var lon = parseFloat($(filaCentro).attr('lon'));
-    console.log("lon", lon);
     var location = {
         lat: parseFloat(sessionStorage.getItem('lat')),
         lon: parseFloat(sessionStorage.getItem('lon'))
@@ -458,7 +457,7 @@ function verCentro(filaCentro) {
 
     if (location.lat != null && location.lon != null) {
         directionsDisplay.setMap(map);
-        calculateAndDisplayRoute(directionsService, directionsDisplay, lat, lon, location);        
+        calculateAndDisplayRoute(directionsService, directionsDisplay, lat, lon, location);
     }
 
     $('#cen-direccion').html($(filaCentro).attr('dir'));
@@ -472,11 +471,11 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, dlat, dl
 
     directionsService.route({
         origin: {
-            lat: origin.lat, 
+            lat: origin.lat,
             lng: origin.lon
         },
         destination: {
-            lat: dlat, 
+            lat: dlat,
             lng: dlon
         },
         travelMode: google.maps.TravelMode[selectedMode]
@@ -489,129 +488,128 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay, dlat, dl
     });
 }
 
-function prepararConsulta(e, data) {
+function prepararConsulta(e) {
+    sanitizeEvt(e);
+
+    var medico = JSON.parse(sessionStorage.getItem('medicoActual'));
+    var currentUser = JSON.parse(sessionStorage.getItem('loggedUser'));
+
+    $('#sche-email').html(currentUser.email);
+    $('#sche-medico').html(`${medico.apellido}, ${medico.nombre}`);
+    $('#sche-centro').html(medico.centroMedico.nombre);
+
+    $.mobile.navigate('#nuevaConsulta');
+}
+
+function guardarConsulta(e) {
+    sanitizeEvt(e);
+
+    var currentUser = JSON.parse(sessionStorage.getItem('loggedUser'));
+    var medicoActual = JSON.parse(sessionStorage.getItem('medicoActual'));
+
+    var email = currentUser.email;
+    var medico = medicoActual.id;
+    var centro = medicoActual.centroMedico.id;
+    var fecha = $('#sche-fecha').val();
+
+    var f = new Date(fecha);
+    fecha = `${f.getDate()}/${f.getMonth() + 1}/${f.getFullYear()} ${f.getHours()}:${f.getMinutes()}`;
+
+    var payload = {
+        email: email,
+        fechaHora: fecha,
+        idProfesional: medico,
+        idCentroMedico: centro
+    }
+
     showLoader();
-    $('input, select').attr('disabled', 'disabled');
 
     $.ajax({
-        url: `${api}/getProfesionales`,
-        type: 'GET',
-        dataType: 'json'
+        url: `${api}/fijarConsultaMedica`,
+        type: 'POST',
+        dataType: 'json',
+        data: payload
     })
     .done(function(res) {
-        var profesionales = res.profesionales;
-
-        if (profesionales.length) {
-            var lista = '<option value="-" selected>Seleccione un profesional</option>';
-
-            profesionales.forEach(function(profesional) {
-                lista += `
-                    <option value="${profesional.id}">
-                        ${profesional.apellido}, ${profesional.nombre}
-                    </option>
-                `;
-            });
-            
-            $('#sche-medico').html(lista);
-            $('#sche-medico').selectmenu('refresh', true);
-
-            $('input, select').not('#sche-centro').attr('disabled', false);
-        }
-
+        $('#exitoConsulta').popup( "open" );
+        $('#sche-fecha').val('');
+        redirectToListaConsultas();
     })
     .fail(function(res) {
-
+        $('#errConsulta').popup( "open" );
     })
     .always(function(res) {
         hideLoader();
     })
 }
 
-function listarCentrosParaConsulta(e) {
-    var id = $(e.target).val();
+function redirectToListaConsultas() {
+    var countdownNumberEl = $('#countdown-number');
+    var countdown = 5;
 
-    if (id === '-') return false;
+    countdownNumberEl.textContent = countdown;
+
+    var loop = setInterval(function() {
+    countdown = --countdown <= 0 ? 5 : countdown;
+
+    if (countdown === 1) {
+        $.mobile.navigate('#consultas');
+        clearInterval(loop);
+    }
+
+    countdownNumberEl.textContent = countdown;
+    }, 1000);
+}
+
+function listarConsultas() {
+    showLoader();
+
+    var usuario = JSON.parse(sessionStorage.getItem('loggedUser'));
 
     $.ajax({
-        url: `${api}/getDetalleProfesional`,
+        url: `${api}/getHistorialConsultasMedicas`,
         type: 'GET',
         dataType: 'json',
         data: {
-            id
+            email: usuario.email
         }
     })
     .done(function(res) {
-        var centrosProfesional = [];
-        centrosProfesional.push(res.profesional.centroMedico);
+        var lista = $('#listadoConsultas');
+        var consultas = res.consultasMedicas;
+        var items = '';
 
-        if (centrosProfesional.length) {
-            var lista = '<option value="-" selected>Seleccione un centro medico</option>';
+        consultas.forEach(function(consulta) {
+            items += `
+                <div data-role="collapsible">
+                    <h3>    ${consulta.centroMedico.nombre}</h3>
+                    <p>${consulta.profesional.apellido}, ${consulta.profesional.nombre}</p>
+                    <p>${consulta.profesional.especialidad}</p>
+                </div>
+            `
+        })
 
-            centrosProfesional.forEach(function(centro) {
-                lista += `
-                    <option value="${centro.id}">
-                        ${centro.nombre}
-                    </option>
-                `;
-            });
-            
-            $('#sche-centro').html(lista);
-            $('#sche-centro').selectmenu('refresh', true);
-
-            $('#sche-centro').attr('disabled', false);
-        }
+        $(lista).html(items);
+        $(lista).collapsibleset('refresh');
     })
-    .fail(function(res) {
-
+    .fail(function() {
+        $('#errConsultas').popup('open');
     })
-    .always(function(res) {
-
+    .always(function() {
+        hideLoader();
     })
 }
 
-function guardarConsulta(e) {
-    sanitizeEvt(e);
-
-    var form = e.target
-    var email = $(form['sche-email']).val();
-    var medico = parseInt($(form['sche-medico']).val());
-    var centro = parseInt($(form['sche-centro']).val());
-    var fecha = $(form['sche-fecha']).val();
-
-    var f = new Date(fecha);
-    fecha = `${f.getDate()}/${f.getMonth() + 1}/${f.getFullYear()} ${f.getHours()}:${f.getMinutes()}`;
-
-
-    $.ajax({
-        url: `${api}/fijarConsultaMedica`,
-        type: 'POST',
-        dataType: 'json',
-        data: {
-            email: email,
-            fechaHora: fecha,
-            idProfesional: medico,
-            idCentroMedico: centro
-        }
-    })
-    .done(function(res) {
-
-    })
-    .fail(function(res) {
-
-    })
-    .always(function(res) {
-
-    })
-
+function showLoader() {
+    $.mobile.loading("show")
 }
 
-function showLoader() { $.mobile.loading("show") }
-
-function hideLoader() { $.mobile.loading("hide") }
+function hideLoader() {
+    $.mobile.loading("hide")
+}
 
 function isUserLogged() {
-    return true;
-    // return loggedUser !== null;
+    return sessionStorage.getItem('loggedUser') !== null;
 }
 
 function gmapload() {
@@ -621,21 +619,22 @@ function gmapload() {
 function gotoRegistro(e) {
     sanitizeEvt(e);
 
-    navHist = window.location.hash;
+    sessionStorage.setItem('navHist', window.location.hash)
     $.mobile.navigate('#altaUsuario');
 }
 
 function backFromRegistro(e) {
     sanitizeEvt(e);
 
+    navHist = sessionStorage.getItem('navHist');
+    sessionStorage.removeItem('navHist');
     $.mobile.navigate(navHist);
-    navHist = '';
 }
 
-function backFromCOnsulta(e) {
+function backFromConsulta(e) {
     sanitizeEvt(e);
 
-    $.mobile.navigate('medicos');
+    $.mobile.navigate('#medicos');
 }
 
 function sanitizeEvt(e) {

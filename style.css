@@ -21,10 +21,66 @@
     display: inline-block !important;
 }
 
+.text-label {
+    border: 1px lightgrey solid;
+    border-radius: 3px;
+    font-style: italic;
+    font-weight: 600;
+    margin-left: 16px;
+    padding: 6px;
+}
+
 #map {
     margin-left: -16px;
     margin-right: -16px;
     height: 180px;
+}
+
+#altaUsuario .register .ui-field-contain {
+    padding: 16px 0;
+}
+
+#countdown {
+    position: relative;
+    margin: auto;
+    margin-top: 16px;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+}
+
+#countdown-number {
+    color: white;
+    display: inline-block;
+    line-height: 40px;
+}
+
+svg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    transform: rotateY(-180deg) rotateZ(-90deg);
+}
+
+svg circle {
+    stroke-dasharray: 113px;
+    stroke-dashoffset: 0px;
+    stroke-linecap: round;
+    stroke-width: 2px;
+    stroke: white;
+    fill: none;
+    animation: countdown 5s linear infinite forwards;
+}
+
+@keyframes countdown {
+    from {
+        stroke-dashoffset: 0px;
+    }
+    to {
+        stroke-dashoffset: 113px;
+    }
 }
 
 /* ************************************************************************** */
