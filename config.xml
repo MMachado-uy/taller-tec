@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<widget xmlns   = "http://www.w3.org/ns/widgets"
+        xmlns:gap   = "http://phonegap.com/ns/1.0"
+        id          = "uy.edu.ort.nombreapp"
+        versionCode = "10"
+        version     = "1.0.0" >
+
+    <name>Obligatorio Tecnologias</name>
+
+    <description>
+        Descripción de la aplicación
+    </description>
+
+    <author href="https://ort.edu.uy" email="support@phonegap.com">
+        Mauricio Machado
+    </author>
+    
+    <preference name='phonegap-version' value='cli-7.0.1' />
+    <preference name='pgb-builder-version' value='2' />
+    
+    <!-- plugins -->
+    <plugin name="cordova-plugin-whitelist" spec="~1.3.3" />
+    <plugin name="cordova-plugin-geolocation" spec="2.4.3" />
+    <plugin name="cordova-plugin-battery-status" spec="~2.0.2" />
+    <plugin name="cordova-plugin-vibration" spec="~3.1.0" />
+    <plugin name="cordova-plugin-device" spec="~2.0.2" />
+    <plugin name="cordova-plugin-contacts" spec="~2.3.1" />
+    <plugin name="cordova-plugin-camera" spec="~2.4.1" />
+    
+    <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="3000" />
+    <preference name="ShowSplashScreenSpinner" value="false"/>
+    <preference name="FadeSplashScreenDuration" value="500"/>
+    
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    
+    <platform name="android">
+        <allow-intent href="market:*" />
+        <icon density="ldpi" src="res/icons/android/drawable-ldpi-icon.png" />
+        <icon density="mdpi" src="res/icons/android/drawable-mdpi-icon.png" />
+        <icon density="hdpi" src="res/icons/android/drawable-hdpi-icon.png" />
+        <icon density="xhdpi" src="res/icons/android/drawable-xhdpi-icon.png" />
+        <icon density="xxhdpi" src="res/icons/android/drawable-xxhdpi-icon.png" />
+        <icon density="xxxhdpi" src="res/icons/android/drawable-xxxhdpi-icon.png" />
+        
+        <splash density="land-ldpi" src="res/screens/android/drawable-land-ldpi-screen.png" />
+        <splash density="land-mdpi" src="res/screens/android/drawable-land-mdpi-screen.png" />
+        <splash density="land-hdpi" src="res/screens/android/drawable-land-hdpi-screen.png" />
+        <splash density="land-xhdpi" src="res/screens/android/drawable-land-xhdpi-screen.png" />
+        <splash density="land-xxhdpi" src="res/screens/android/drawable-land-xxhdpi-screen.png" />
+        <splash density="land-xxxhdpi" src="res/screens/android/drawable-land-xxxhdpi-screen.png" />
+        <splash density="port-ldpi" src="res/screens/android/drawable-port-ldpi-screen.png" />
+        <splash density="port-mdpi" src="res/screens/android/drawable-port-mdpi-screen.png" />
+        <splash density="port-hdpi" src="res/screens/android/drawable-port-hdpi-screen.png" />
+        <splash density="port-xhdpi" src="res/screens/android/drawable-port-xhdpi-screen.png" />
+        <splash density="port-xxhdpi" src="res/screens/android/drawable-port-xxhdpi-screen.png" />
+        <splash density="port-xxxhdpi" src="res/screens/android/drawable-port-xxxhdpi-screen.png" />
+    </platform>
+    
+</widget>
